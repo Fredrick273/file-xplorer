@@ -126,6 +126,10 @@
   #textsubmit{
     margin-top: 20px;
   }
+
+  #pointer{
+    cursor: pointer;
+  }
     </style>
   </head>
   <body>
@@ -181,14 +185,14 @@
               </button>
             </li>
           </ul>
-          <form class="d-flex">
+          <!-- <form class="d-flex">
             <input
               class="form-control"
               id="myInput"
               type="text"
               placeholder="Search.."
             />
-          </form>
+          </form> -->
         </div>
       </div>
     </nav>
@@ -197,17 +201,17 @@
     <div class="directory-tree">
         <ul>
             <li>
-                <span onclick="back()" class="folder">{{ folder }}/</span>
+                <span id="pointer" onclick="back()" class="folder">{{ folder }}/</span>
             </li>
             {% for dir in dirs %}
             <li>
-                <span onclick='window.open("./../{{ dir }}/", "_self");' class="folder">-- {{ dir }}/</span>
+                <span id="pointer" onclick='window.open("./../{{ dir }}/", "_self");' class="folder">-- {{ dir }}/</span>
             </li>
             {% endfor %}
 
             {% for file in files %}
             <li>
-                <span onclick='window.open("./../{{ file }}/", "_self");' class="file">-- {{ file }}</span>
+                <span id="pointer" onclick='window.open("./../{{ file }}/", "_self");' class="file">-- {{ file }}</span>
             </li>
             {% endfor %}
             
@@ -232,6 +236,9 @@
     <script>
       color = "light";
       $(document).ready(function () {
+        if (color != getCookie("theme")){
+          change();
+        }
         $("#myInput").on("keyup", function () {
           var value = $(this).val().toLowerCase();
           $("#all div").filter(function () {
@@ -255,7 +262,11 @@
             .setAttribute("class", "btn btn-outline-light");
 
           document.querySelector(".text-editor").style.backgroundColor =
-            "rgb(40,40,40)";
+            "rgb(21,27,37)";
+          document.querySelector("#editor").style.backgroundColor =
+            "rgb(21,27,37)";
+            document.querySelector("#editor").style.color =
+            "rgb(233,236,239)";
         } else {
           color = "light";
           document
@@ -267,8 +278,29 @@
 
           document.querySelector(".text-editor").style.backgroundColor =
             "rgb(250,250,250)";
+            document.querySelector("#editor").style.backgroundColor =
+            "rgb(250,250,250)";
+            document.querySelector("#editor").style.color =
+            "rgb(0,0,0)";
         }
       }
+
+      // Template function
+function getCookie(cname) {
+  let name = cname + "=";
+  let decodedCookie = decodeURIComponent(document.cookie);
+  let ca = decodedCookie.split(';');
+  for(let i = 0; i <ca.length; i++) {
+    let c = ca[i];
+    while (c.charAt(0) == ' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return "";
+}
     </script>
   </body>
 </html>
