@@ -1,8 +1,9 @@
 from django.shortcuts import render,HttpResponse,redirect,resolve_url
 import os
 from django.conf import settings
-from .forms import newFolderForm,uploadfileform,deletefileform
+from .forms import newFolderForm,uploadfileform,deletefileform,renamefileform
 from django.urls import reverse
+import shutil
 
 
 # Create your views here.
@@ -44,7 +45,7 @@ def explorer(request,dir=""):
             # staticPath = settings.STATICFILES_DIRS[0]
             # formats = [x.split(".")[0] for x in os.listdir(staticPath) if os.path.isfile(os.path.join(staticPath,x))]
 
-            return render(request,'filesystem/file.html',context={"dirs":folders,"files":files,"addr":dir,"form":newFolderForm,"uploadfileform":uploadfileform,"deletefileform":deletefileform})
+            return render(request,'filesystem/file.html',context={"dirs":folders,"files":files,"addr":dir,"form":newFolderForm,"uploadfileform":uploadfileform,"deletefileform":deletefileform,"renamefileform":renamefileform})
     else:
         
         content = "Invalid dir"
@@ -119,12 +120,36 @@ def deletefile(request):
             path = os.path.join(settings.EXTERNAL_DIR,directory,file_name)
             if os.path.exists(path):
                 if os.path.isdir(path):
-                    os.rmdir(path)
+                    shutil.rmtree(path)
                 else:
                     os.remove(path)
             
             
-    if directory:
-        explorer_url = reverse('explorer', kwargs={'dir': directory})
-        return redirect(explorer_url)
+            if directory:
+                explorer_url = reverse('explorer', kwargs={'dir': directory})
+                return redirect(explorer_url)
+    return redirect((resolve_url("home")))
+
+
+def renameitem(request):
+    if request.method == "POST":
+        form = renamefileform(request.POST)
+        if form.is_valid():
+            new_name = form.cleaned_data['name']
+            file_name = form.cleaned_data["file"]
+            directory = form.cleaned_data["directory"]
+            path = os.path.join(settings.EXTERNAL_DIR,directory,file_name)
+            newpath = os.path.join(settings.EXTERNAL_DIR,directory,new_name)
+           
+            if os.path.exists(path):
+                try:
+                    os.rename(path,newpath)
+                except:
+                    return redirect((resolve_url("home")))
+    
+            if directory:
+                explorer_url = reverse('explorer', kwargs={'dir': directory})
+                return redirect(explorer_url)
+        else:
+            print(form.errors)
     return redirect((resolve_url("home")))

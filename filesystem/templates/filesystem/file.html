@@ -290,6 +290,7 @@
       <p>Are you sure to delete?</p>
       <form method="post" action="{% url 'delete' %}">
         {% csrf_token %}
+
         <input
           type="text"
           id="deleteFolderName"
@@ -314,27 +315,63 @@
         <button type="submit" class="btn btn-danger">Delete File</button>
       </form>
     </dialog>
+
+    <dialog id="renamefiledialog">
+
+      <form method="post" action="{% url 'rename' %}">
+        {% csrf_token %}
+
+        <label for="{{ renamefileform.name.id_for_label }}">Folder Name:</label>
+        <input
+          type="text"
+          id="{{ renamefileform.name.id_for_label }}"
+          name="{{ renamefileform.name.name }}"
+        />
+
+        <input
+          type="text"
+          id="renamefoldername"
+          name="{{ renamefileform.file.name }}"
+          value=""
+          hidden
+          
+        />
+    
+        <input
+          type="text"
+          id="{{ renamefileform.directory.id_for_label }}"
+          name="{{ renamefileform.directory.name }}"
+          value="{{ addr }}"
+          hidden
+        />
+    
+        <br />
+        <button value="cancel" formmethod="dialog" onclick="closeREnameDialog()" class="btn btn-secondary">
+          Cancel
+        </button>
+        <button type="submit" class="btn btn-primary">Rename</button>
+      </form>
+    </dialog>
     
 
     <div id="customContextMenu" style="display: none">
       <ul class="menuItems">
         <li class="items" id="shownefolderdialog">New Folder</li>
+        <li class="items" id="showuploadfiledialog">Upload File</li>
         {% if addr %}
         <li class="items" onclick="back()">Back</li>
         {% endif %}
-        <li class="items" id="showuploadfiledialog">Upload File</li>
       </ul>
     </div>
 
     <div id="customContextMenu-file" style="display: none">
       <ul class="menuItems">
-        <li class="items" id="shownefolderdialog">Rename</li>
+        <li class="items" id="showrenamedialog">Rename</li>
         <li class="items" id="showdeletedialog">Delete</li>
+        <li class="items" id="showuploadfiledialog">Upload File</li>
         {% if addr %}
         <li class="items" onclick="back()">Back</li>
-        {% endif %}
-        <li class="items" id="showuploadfiledialog">Upload File</li>
-        
+        {% endif %}     
       </ul>
     </div>
 
@@ -405,6 +442,9 @@
       const uploadfiledialog = document.getElementById("uploadfiledialog");
       const deletefiledialog = document.getElementById("deletefiledialog");
       const showdeletedialog = document.getElementById("showdeletedialog");
+      const showrenamedialog = document.getElementById("showrenamedialog");
+      const renamedialog = document.getElementById("renamefiledialog")
+
 
       showButton.forEach((e) =>
         e.addEventListener("click", () => {
@@ -419,13 +459,24 @@
       );
 
      // Add an event listener to show the delete dialog when "Delete" is clicked
+showrenamedialog.addEventListener("click", () => {
+  const folderName = event.target.getAttribute("data-folder");
+  const renamefolderinput = document.getElementById("renamefoldername");
+  renamefolderinput.value = folderName;
+  renamedialog.showModal();
+});
+
 showdeletedialog.addEventListener("click", () => {
   const folderName = event.target.getAttribute("data-folder");
-  console.log(folderName);
   const deleteFolderNameInput = document.getElementById("deleteFolderName");
   deleteFolderNameInput.value = folderName;
   deletefiledialog.showModal();
 });
+
+
+function closeREnameDialog(){
+renamedialog.close();
+}
 
 // Function to close the delete dialog
 function closeDeleteFileDialog() {
@@ -446,21 +497,24 @@ function closeDeleteFileDialog() {
   event.preventDefault();
   var myContextMenu = document.getElementById("customContextMenu");
   var myContextMenuFile = document.getElementById("customContextMenu-file");
+  const folderName = event.target.getAttribute("data-folder");
+    const delebutton = document.getElementById("showdeletedialog");
+    const renamebutton = document.getElementById("showrenamedialog");
 
   myContextMenu.style.display = "none";
   myContextMenuFile.style.display = "none";
   
   if (event.target.classList.contains('folder')) {
-    const folderName = event.target.getAttribute("data-folder");
-    const delebutton = document.getElementById("showdeletedialog");
-    delebutton.setAttribute("data-folder", folderName);
+    
+    delebutton.setAttribute("data-folder", folderName); 
+    renamebutton.setAttribute("data-folder", folderName);
     myContextMenuFile.style.display = "block";
     myContextMenuFile.style.left = (event.pageX + 10) + "px";
     myContextMenuFile.style.top = (event.pageY + 10) + "px";
   } else if (event.target.classList.contains('file')) {
-    const folderName = event.target.getAttribute("data-folder");
-    const delebutton = document.getElementById("showdeletedialog");
-    delebutton.setAttribute("data-folder", folderName);
+ 
+    delebutton.setAttribute("data-folder", folderName);  
+    renamebutton.setAttribute("data-folder", folderName);
     myContextMenuFile.style.display = "block";
     myContextMenuFile.style.left = (event.pageX + 10) + "px";
     myContextMenuFile.style.top = (event.pageY + 10) + "px";
