@@ -4,6 +4,8 @@ from django.conf import settings
 from .forms import newFolderForm,uploadfileform,deletefileform,renamefileform
 from django.urls import reverse
 import shutil
+import mimetypes
+from django.http import FileResponse
 
 
 # Create your views here.
@@ -28,12 +30,23 @@ def explorer(request,dir=""):
                     folder_name = path_folders[-2]
                 else:
                     folder_name = "root"
-
-                return render(request,'filesystem/editfile.html',context={"content":content,"dirs":folders,"files":files,"folder":folder_name,"addr":dir})
+                
+                return render(request,'filesystem/editfile.html',context={"content":content,"filedir":filedir,"dirs":folders,"files":files,"folder":folder_name,"addr":dir})
                 
             except:
+                root = "/".join(path_folders[:-1])
                 
-                return HttpResponse(filedir)
+                path = os.path.join(settings.EXTERNAL_DIR,root)
+                folders = [folder for folder in os.listdir(path) if os.path.isdir(os.path.join(path,folder))]
+                files = [file for file in os.listdir(path) if os.path.isfile(os.path.join(path,file))]
+                content_type, _ = mimetypes.guess_type(filedir)
+
+                if len(path_folders)>1:
+                    folder_name = path_folders[-2]
+                else:
+                    folder_name = "root"
+
+                return render(request,'filesystem/noneditfile.html',context={"filedir":filedir,"content_type":content_type,"dirs":folders,"files":files,"folder":folder_name,"addr":dir})
                 
 
         else:
@@ -153,3 +166,17 @@ def renameitem(request):
         else:
             print(form.errors)
     return redirect((resolve_url("home")))
+
+
+def filepreview(request,dir):
+    if os.path.exists(dir) and os.path.isfile(dir) and dir.startswith(os.path.abspath(settings.EXTERNAL_DIR)+os.sep):
+        content_type, _ = mimetypes.guess_type(dir)
+
+        file =  open(dir, "rb")
+        
+        response = FileResponse(file, content_type=content_type)
+
+        return response
+        
+    return HttpResponse("Error in" + dir)
+

@@ -76,8 +76,8 @@
       }
 
       /* Text editor styles */
-      .text-editor {
-        width: 80%;
+      .preview {
+        width: auto;
         margin: 0 auto;
         padding: 20px;
         background-color: white;
@@ -85,10 +85,9 @@
         border-radius: 5px;
       }
 
-      .text-editor textarea {
-        width: 100%;
+      .preview img {
+        width: auto;
         height: 400px;
-        border: 1px solid #ccc;
         padding: 10px;
         font-size: 16px;
       }
@@ -111,7 +110,7 @@
 
   /* Style the text editor container */
   .text-editor-container {
-    width: 75%; /* Adjust the width as needed */
+    width: auto; /* Adjust the width as needed */
     float: left;
     margin-left: 2%;
   }
@@ -220,18 +219,33 @@
     
     <!-- Text Editor -->
     <div class="text-editor-container">
-        
-        <div class="text-editor">
-            <form method="post" action="{% url 'editfile' dir=addr %}">
-                {% csrf_token %}
-                <textarea id="editor" name="content" placeholder="{{ content }}">{{ content }}</textarea>
-                <button type="submit" id="textsubmit" class="btn btn-primary">Save</button>
-            </form>
-                <button id="submit" onclick='download()' class="btn btn-primary">Download</button>
+        <div class="preview">
+            {% if content_type == "image/jpeg" or content_type == "image/png" %}
+                <img src="{% url 'filepreview' dir=filedir %}" alt="Image" />
+            {% elif content_type == "application/pdf" %}
+                <object data="{% url 'filepreview' dir=filedir %}" type="application/pdf" width="100%" height="500px">
+                    <p>Your browser does not support PDFs.</p>
+                </object>
+            
+            {% elif content_type == "audio/mpeg" %}
+                <audio controls>
+                    <source src="{% url 'filepreview' dir=filedir %}" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
+            {% elif content_type == "video/mp4" %}
+                <video controls width="100%" height="auto">
+                    <source src="{% url 'filepreview' dir=filedir %}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            {% else %}
+                <p>File type not supported.</p>
+            {% endif %}
+            <br>
+            <button id="textsubmit" onclick='download()' class="btn btn-primary">Download</button>
         </div>
-        
-        
-      </div>
+    </div>
+    
+    
       
     </div>
     <script>
@@ -262,7 +276,7 @@
             .getElementById("color-mode-button")
             .setAttribute("class", "btn btn-outline-light");
 
-          document.querySelector(".text-editor").style.backgroundColor =
+          document.querySelector(".preview").style.backgroundColor =
             "rgb(21,27,37)";
           document.querySelector("#editor").style.backgroundColor =
             "rgb(21,27,37)";
@@ -277,7 +291,7 @@
             .getElementById("color-mode-button")
             .setAttribute("class", "btn btn-outline-secondary");
 
-          document.querySelector(".text-editor").style.backgroundColor =
+          document.querySelector(".preview").style.backgroundColor =
             "rgb(250,250,250)";
             document.querySelector("#editor").style.backgroundColor =
             "rgb(250,250,250)";
@@ -286,6 +300,9 @@
         }
       }
 
+      function download(){
+        window.open("{% url 'filepreview' dir=filedir %}",'_blank');
+      }
       // Template function
 function getCookie(cname) {
   let name = cname + "=";
@@ -302,10 +319,6 @@ function getCookie(cname) {
   }
   return "";
 }
-
-function download(){
-        window.open("{% url 'filepreview' dir=filedir %}",'_blank');
-      }
     </script>
   </body>
 </html>
