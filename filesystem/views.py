@@ -169,7 +169,8 @@ def renameitem(request):
 
 
 def filepreview(request,dir):
-    if os.path.exists(dir) and os.path.isfile(dir) and dir.startswith(os.path.abspath(settings.EXTERNAL_DIR)+os.sep):
+    dir = os.path.join(settings.EXTERNAL_DIR,dir)
+    if os.path.exists(dir) and os.path.isfile(dir):
         content_type, _ = mimetypes.guess_type(dir)
 
         file =  open(dir, "rb")

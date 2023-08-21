@@ -108,6 +108,11 @@
     margin-bottom: 5px;
   }
 
+  .directory-tree li :hover{
+    margin-bottom: 5px;
+    text-decoration: underline;
+  }
+
   /* Style the text editor container */
   .text-editor-container {
     width: auto; /* Adjust the width as needed */
@@ -128,6 +133,10 @@
 
   #pointer{
     cursor: pointer;
+  }
+
+  #pointer :hover{
+    text-decoration: underline;
   }
     </style>
   </head>
@@ -221,20 +230,20 @@
     <div class="text-editor-container">
         <div class="preview">
             {% if content_type == "image/jpeg" or content_type == "image/png" %}
-                <img src="{% url 'filepreview' dir=filedir %}" alt="Image" />
+                <img src="{% url 'filepreview' dir=addr %}" alt="Image" />
             {% elif content_type == "application/pdf" %}
-                <object data="{% url 'filepreview' dir=filedir %}" type="application/pdf" width="100%" height="500px">
+                <object data="{% url 'filepreview' dir=addr %}" type="application/pdf" width="100%" height="500px">
                     <p>Your browser does not support PDFs.</p>
                 </object>
             
             {% elif content_type == "audio/mpeg" %}
                 <audio controls>
-                    <source src="{% url 'filepreview' dir=filedir %}" type="audio/mpeg">
+                    <source src="{% url 'filepreview' dir=addr %}" type="audio/mpeg">
                     Your browser does not support the audio element.
                 </audio>
             {% elif content_type == "video/mp4" %}
                 <video controls width="100%" height="auto">
-                    <source src="{% url 'filepreview' dir=filedir %}" type="video/mp4">
+                    <source src="{% url 'filepreview' dir=addr %}" type="video/mp4">
                     Your browser does not support the video tag.
                 </video>
             {% else %}
@@ -301,7 +310,7 @@
       }
 
       function download(){
-        window.open("{% url 'filepreview' dir=filedir %}",'_blank');
+        window.open("{% url 'filepreview' dir=addr %}",'_blank');
       }
       // Template function
 function getCookie(cname) {
