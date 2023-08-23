@@ -2,7 +2,10 @@ import json
 import psutil
 import time
 import platform
+import subprocess
+import socket,os
 from channels.generic.websocket import WebsocketConsumer
+from django.conf import settings
 
 class ResourceConsumer(WebsocketConsumer):
     def connect(self):
@@ -36,3 +39,34 @@ class ResourceConsumer(WebsocketConsumer):
             self.send(text_data=json.dumps(data))
         except Exception as e:
             self.send(text_data=json.dumps({"error": str(e)}))
+
+
+os.chdir("folder")
+
+class TerminalConsumer(WebsocketConsumer):
+    def connect(self):
+        self.accept()
+
+    def disconnect(self, code):
+        pass
+
+    def receive(self, text_data):
+        sysname = socket.gethostname()
+        try:
+            text_data_json = json.loads(text_data)
+            command = text_data_json["command"]
+
+            if command.startswith("cd "):
+                directory = command[3:]
+                os.chdir(os.path.join(os.path.join(settings.EXTERNAL_DIR,directory)))
+                response = f"Changed directory to {directory}"
+            else:
+                response = subprocess.check_output(command, shell=True, stderr=subprocess.STDOUT, text=True)
+
+        except Exception as e:
+            response = str("Error \n" + str(e))
+        data = {
+            "sysname": sysname,
+            "response": response
+        }
+        self.send(text_data=json.dumps(data))

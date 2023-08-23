@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-from resource.views import resource
+from resource.views import resource,terminal
 
 
 urlpatterns = [
@@ -13,6 +13,7 @@ urlpatterns = [
     path('delete/',views.deletefile,name="delete"),
     path('rename/',views.renameitem,name='rename'),
     path('filepreview/<path:dir>/',views.filepreview,name='filepreview'),
-    path('',resource,name="resource")
+    path('',resource,name="resource"),
+    path('terminal/',terminal,name='terminal')
     
 ]
