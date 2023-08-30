@@ -18,3 +18,7 @@ class renamefileform(forms.Form):
     name = forms.CharField(max_length=100)
     file = forms.CharField(max_length=100)
     directory = forms.CharField(max_length=2000,required=False)
+
+class newfileform(forms.Form):
+    file = forms.CharField(max_length=100)
+    directory = forms.CharField(max_length=2000,required=False) 

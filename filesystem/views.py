@@ -1,7 +1,7 @@
 from django.shortcuts import render,HttpResponse,redirect,resolve_url
 import os
 from django.conf import settings
-from .forms import newFolderForm,uploadfileform,deletefileform,renamefileform
+from .forms import newFolderForm,uploadfileform,deletefileform,renamefileform,newfileform
 from django.urls import reverse
 import shutil
 import mimetypes
@@ -58,7 +58,7 @@ def explorer(request,dir=""):
             # staticPath = settings.STATICFILES_DIRS[0]
             # formats = [x.split(".")[0] for x in os.listdir(staticPath) if os.path.isfile(os.path.join(staticPath,x))]
 
-            return render(request,'filesystem/file.html',context={"dirs":folders,"files":files,"addr":dir,"form":newFolderForm,"uploadfileform":uploadfileform,"deletefileform":deletefileform,"renamefileform":renamefileform})
+            return render(request,'filesystem/file.html',context={"dirs":folders,"files":files,"addr":dir,"form":newFolderForm,"uploadfileform":uploadfileform,"deletefileform":deletefileform,"renamefileform":renamefileform,"newfileform":newfileform})
     else:
         
         content = "Invalid dir"
@@ -181,3 +181,30 @@ def filepreview(request,dir):
         
     return HttpResponse("Error in" + dir)
 
+
+def newfile(request):
+    if request.method == "POST":
+        form = newfileform(request.POST)
+        if form.is_valid():
+            file_name = form.cleaned_data["file"]
+            directory = form.cleaned_data["directory"]
+            path = os.path.join(settings.EXTERNAL_DIR,directory)
+
+            if '.' in file_name:
+                while (file_name in os.listdir(path)):
+                    filenameparts = file_name.split(".")
+                    filenameparts[-2] += " (2)"
+                    file_name = ".".join(filenameparts)
+            
+                newfilepath = os.path.join(path,file_name)
+                open(newfilepath,"w")
+
+
+                if directory:
+                    explorer_url = reverse('explorer', kwargs={'dir': directory})
+                    return redirect(explorer_url)
+            else:
+                return redirect((resolve_url("home")))
+        else:
+            print(form.errors)
+    return redirect((resolve_url("home")))

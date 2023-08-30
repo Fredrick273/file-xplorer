@@ -51,6 +51,13 @@ color = "light";
       const showdeletedialog = document.getElementById("showdeletedialog");
       const showrenamedialog = document.getElementById("showrenamedialog");
       const renamedialog = document.getElementById("renamefiledialog")
+      const newfiledialog = document.getElementById("newfiledialog");
+      const shownewfiledialog = document.getElementById("shownewfiledialog");
+      
+
+      shownewfiledialog.addEventListener("click", ()=>{
+        newfiledialog.showModal();
+      })
 
 
       showButton.forEach((e) =>
@@ -90,6 +97,9 @@ function closeDeleteFileDialog() {
   deletefiledialog.close();
 }
 
+function closenewfiledialog(){
+  newfiledialog.close();
+}
 
       function closeUploadFileDialog() {
         uploadfiledialog.close();

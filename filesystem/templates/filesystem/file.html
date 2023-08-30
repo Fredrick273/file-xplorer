@@ -252,11 +252,41 @@
         <button type="submit" class="btn btn-primary">Rename</button>
       </form>
     </dialog>
+
+
+    <dialog id="newfiledialog">
+
+      <form method="post" action="{% url 'newfile' %}">
+        {% csrf_token %}
+
+        <label for="{{ newfileform.file.id_for_label }}">New File:</label>
+        <input
+          type="text"
+          id="{{ newfileform.file.id_for_label }}"
+          name="{{ newfileform.file.name }}"
+        />
+    
+        <input
+          type="text"
+          id="{{ newfileform.directory.id_for_label }}"
+          name="{{ newfileform.directory.name }}"
+          value="{{ addr }}"
+          hidden
+        />
+    
+        <br />
+        <button value="cancel" formmethod="dialog" onclick="closeREnameDialog()" class="btn btn-secondary">
+          Cancel
+        </button>
+        <button type="submit" class="btn btn-primary">Create file</button>
+      </form>
+    </dialog>
     
 
     <div id="customContextMenu" style="display: none">
       <ul class="menuItems">
         <li class="items" id="shownefolderdialog">New Folder</li>
+        <li class="items" id="shownewfiledialog">New File</li>
         <li class="items" id="showuploadfiledialog">Upload File</li>
         {% if addr %}
         <li class="items" onclick="back()">Back</li>
@@ -268,7 +298,6 @@
       <ul class="menuItems">
         <li class="items" id="showrenamedialog">Rename</li>
         <li class="items" id="showdeletedialog">Delete</li>
-        <li class="items" id="showuploadfiledialog">Upload File</li>
         {% if addr %}
         <li class="items" onclick="back()">Back</li>
         {% endif %}     
