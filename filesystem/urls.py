@@ -15,6 +15,7 @@ urlpatterns = [
     path('filepreview/<path:dir>/',views.filepreview,name='filepreview'),
     path('',resource,name="resource"),
     path('terminal/',terminal,name='terminal'),
+    path('test/',views.test)
 
     
 ]

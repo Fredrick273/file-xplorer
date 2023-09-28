@@ -11,13 +11,11 @@ color = "light";
         });
       });
 
-      function back() {
-        window.open("./..", "_self");
-      }
-
+      
       function change() {
         if (color == "light") {
           color = "dark";
+          document.cookie = "theme=dark; expires=Thu, 18 Dec 2050 12:00:00 UTC";
           document
             .getElementById("color-mode")
             .setAttribute("data-bs-theme", "dark");
@@ -25,14 +23,11 @@ color = "light";
             .getElementById("color-mode-button")
             .setAttribute("class", "btn btn-outline-light");
 
-          document.querySelector(".preview").style.backgroundColor =
-            "rgb(21,27,37)";
-          document.querySelector("#editor").style.backgroundColor =
-            "rgb(21,27,37)";
-            document.querySelector("#editor").style.color =
-            "rgb(233,236,239)";
+          document.querySelector(".root").style.backgroundColor =
+            "rgb(40,40,40)";
         } else {
           color = "light";
+          document.cookie = "theme=light; expires=Thu, 18 Dec 2050 12:00:00 UTC";
           document
             .getElementById("color-mode")
             .setAttribute("data-bs-theme", "light");
@@ -40,31 +35,23 @@ color = "light";
             .getElementById("color-mode-button")
             .setAttribute("class", "btn btn-outline-secondary");
 
-          document.querySelector(".preview").style.backgroundColor =
+          document.querySelector(".root").style.backgroundColor =
             "rgb(250,250,250)";
-            document.querySelector("#editor").style.backgroundColor =
-            "rgb(250,250,250)";
-            document.querySelector("#editor").style.color =
-            "rgb(0,0,0)";
         }
       }
-
-      function download(){
-        window.open("{% url 'filepreview' dir=addr %}",'_blank');
-      }
-      // Template function
+// Template function
 function getCookie(cname) {
-  let name = cname + "=";
-  let decodedCookie = decodeURIComponent(document.cookie);
-  let ca = decodedCookie.split(';');
-  for(let i = 0; i <ca.length; i++) {
-    let c = ca[i];
-    while (c.charAt(0) == ' ') {
-      c = c.substring(1);
+    let name = cname + "=";
+    let decodedCookie = decodeURIComponent(document.cookie);
+    let ca = decodedCookie.split(';');
+    for(let i = 0; i <ca.length; i++) {
+      let c = ca[i];
+      while (c.charAt(0) == ' ') {
+        c = c.substring(1);
+      }
+      if (c.indexOf(name) == 0) {
+        return c.substring(name.length, c.length);
+      }
     }
-    if (c.indexOf(name) == 0) {
-      return c.substring(name.length, c.length);
-    }
+    return "";
   }
-  return "";
-}

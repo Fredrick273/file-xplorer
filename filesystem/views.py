@@ -208,3 +208,7 @@ def newfile(request):
         else:
             print(form.errors)
     return redirect((resolve_url("home")))
+
+
+def test(request):
+    return render(request,"filesystem/base.html")
