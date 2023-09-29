@@ -44,11 +44,12 @@
       style="background-color: #00b7ff"
     >
       <div class="container-fluid">
+        {% block navicon %}
         <a class="navbar-brand">
           <img src="{% static 'icon.png' %}" alt="" width="40" height="32" />
         </a>
         <a class="navbar-brand" href="" style="color: black">File Manager</a>
-
+        {% endblock %}
         <button
           class="navbar-toggler"
           type="button"
@@ -101,14 +102,9 @@
               </button>
             </li>
           </ul>
-          <form class="d-flex">
-            <input
-              class="form-control"
-              id="myInput"
-              type="text"
-              placeholder="Search.."
-            />
-          </form>
+          {% block search %}
+
+          {% endblock %}
         </div>
       </div>
     </nav>

@@ -2,6 +2,7 @@
 
 {% load static %}
 
+{% block title %}Terminal{% endblock %}
 
 {% block head %}
 
@@ -93,6 +94,13 @@
   >
 </li>
 
+{% endblock %}
+
+{% block navicon %}
+        <a class="navbar-brand">
+          <img src="{% static 'icon.png' %}" alt="" width="40" height="32" />
+        </a>
+        <a class="navbar-brand" href="" style="color: black">Terminal</a>
 {% endblock %}
 
   {% block content %}

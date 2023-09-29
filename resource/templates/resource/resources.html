@@ -2,6 +2,9 @@
 
 {% load static %}
 
+{% block title %}Resource Monitor{% endblock %}
+
+
 {% block head %}
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -85,6 +88,13 @@ color: rgb(233, 236, 239);
   >
 </li>
 
+{% endblock %}
+
+{% block navicon %}
+        <a class="navbar-brand">
+          <img src="{% static 'icon.png' %}" alt="" width="40" height="32" />
+        </a>
+        <a class="navbar-brand" href="" style="color: black">Resource Monitor</a>
 {% endblock %}
 
 
