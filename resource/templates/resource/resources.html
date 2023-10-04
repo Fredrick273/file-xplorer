@@ -302,10 +302,12 @@ color: rgb(233, 236, 239);
                 },
             }
         });
+
+        const protocol = (window.location.protocol == 'https') ? 'wss' : 'ws';
     
         // WebSocket connection for resource data
         const resourceSocket = new WebSocket(
-            'ws://'
+            protocol +'://'
             +
             window.location.host
             +

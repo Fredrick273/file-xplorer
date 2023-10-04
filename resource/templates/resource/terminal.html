@@ -122,8 +122,11 @@
         const history = [];
         let historyIndex = -1;
 
+        const protocol = (window.location.protocol == 'https') ? 'wss' : 'ws';
+
         const terminalSocket = new WebSocket(
-            'ws://' + window.location.host + "/ws/terminal/"
+            protocol +'://'
+            + window.location.host + "/ws/terminal/"
         );
 
         let sysname = ""
