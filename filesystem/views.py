@@ -6,9 +6,11 @@ from django.urls import reverse
 import shutil
 import mimetypes
 from django.http import FileResponse
+from django.contrib.auth.decorators import login_required
 
 
 # Create your views here.
+@login_required
 def explorer(request,dir=""):
     if os.path.exists(os.path.join(settings.EXTERNAL_DIR,dir)):
         path_folders = dir.split("/")
@@ -64,7 +66,7 @@ def explorer(request,dir=""):
         content = "Invalid dir"
     return HttpResponse(str(content))
 
-
+@login_required
 def newfolder(request):
     if request.method == "POST":
         
@@ -90,7 +92,7 @@ def newfolder(request):
 
     return redirect((resolve_url("home")))
 
-
+@login_required
 def editfile(request,dir):
     if request.method == "POST":
         content = request.POST.get("content")
@@ -104,7 +106,7 @@ def editfile(request,dir):
         return redirect(explorer_url)
     return redirect((resolve_url("home")))
     
-
+@login_required
 def uploadfile(request):
     if request.method == 'POST':
         form = uploadfileform(request.POST, request.FILES)
@@ -123,7 +125,7 @@ def uploadfile(request):
     return redirect((resolve_url("home")))
 
 
-
+@login_required
 def deletefile(request):
     if request.method == "POST":
         form = deletefileform(request.POST)
@@ -143,7 +145,7 @@ def deletefile(request):
                 return redirect(explorer_url)
     return redirect((resolve_url("home")))
 
-
+@login_required
 def renameitem(request):
     if request.method == "POST":
         form = renamefileform(request.POST)
@@ -167,7 +169,7 @@ def renameitem(request):
             print(form.errors)
     return redirect((resolve_url("home")))
 
-
+@login_required
 def filepreview(request,dir):
     dir = os.path.join(settings.EXTERNAL_DIR,dir)
     if os.path.exists(dir) and os.path.isfile(dir):
@@ -181,7 +183,7 @@ def filepreview(request,dir):
         
     return HttpResponse("Error in" + dir)
 
-
+@login_required
 def newfile(request):
     if request.method == "POST":
         form = newfileform(request.POST)
@@ -209,6 +211,6 @@ def newfile(request):
             print(form.errors)
     return redirect((resolve_url("home")))
 
-
+@login_required
 def test(request):
     return render(request,"filesystem/base.html")

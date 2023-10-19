@@ -41,6 +41,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+
     'filesystem',
     'resource'
 ]
@@ -54,6 +58,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
+    'allauth.account.middleware.AccountMiddleware'
+
 ]
 
 ROOT_URLCONF = 'backend.urls'
@@ -61,7 +67,7 @@ ROOT_URLCONF = 'backend.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -137,5 +143,12 @@ STATIC_URL = '/static/'
 EXTERNAL_DIR = os.path.abspath(os.path.join(BASE_DIR,"folder/"))
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'filesystem', 'templates', 'static'),  # Adjust the path as needed
+    os.path.join(BASE_DIR,  'templates', 'static'),  # Adjust the path as needed
 ]
+
+
+SITE_ID = 1
+LOGIN_REDIRECT_URL = '/'
+SIGNUP_REDIRECT_URL = '/'
+ACCOUNT_EMAIL_VERIFICATION = 'none'
+ACCOUNT_LOGIN_TEMPLATE = '/accounts/login.html'
